@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>STM32 &#x5b9e;&#x65f6;&#x63a7;&#x5236;&#x5165;&#x95e8;&#xff1a;&#x4ece;&#x70b9;&#x706f;&#x5230;&#x667a;&#x80fd;&#x5c0f;&#x8f66;</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <span id="markdown-mermaid" aria-hidden="true" data-config="{&quot;darkModeTheme&quot;:&quot;vscode&quot;,&quot;lightModeTheme&quot;:&quot;vscode&quot;,&quot;maxTextSize&quot;:50000,&quot;clickDrag&quot;:&quot;alt&quot;,&quot;showControls&quot;:&quot;onHoverOrFocus&quot;,&quot;resizable&quot;:true,&quot;maxHeight&quot;:&quot;&quot;}"></span>
+				<h1 id="stm32-实时控制入门从点灯到智能小车">STM32 实时控制入门：从点灯到智能小车</h1>
+<h2 id="一课程概述">一、课程概述</h2>
+<h3 id="1-课程定位">1. 课程定位</h3>
+<p>本课程以一辆基础循迹小车为最终项目，带领初学者完成一次完整的机器人控制实践：</p>
+<blockquote>
+<p>认识电子元件 → STM32 读取输入 → 程序进行判断 → 控制电机运动 → 根据结果不断调整</p>
+</blockquote>
+<p>课程不追求全面讲解 STM32 的所有外设，而是围绕 GPIO、PWM、串口和传感器等最有代表性的内容，帮助参与者建立嵌入式机器人控制的基本认识。</p>
+<h3 id="2-面向对象">2. 面向对象</h3>
+<p>课程面向：</p>
+<ul>
+<li>对机器人、嵌入式或电子制作感兴趣的本科生；</li>
+<li>具有基础 C 语言知识、但没有 STM32 开发经验的同学；</li>
+<li>接触过 Arduino、希望进一步了解底层控制的同学。</li>
+</ul>
+<p>不要求参与者具备电路、控制理论或单片机基础。课程从最基本的电子元件和接线开始，但只讲与项目直接相关的内容。</p>
+<p>建议每组 2～3 人，并尽量将不同基础的同学混合分组。</p>
+<h3 id="3-建议课时">3. 建议课时</h3>
+<ul>
+<li>共 4 次课；</li>
+<li>每次 2～2.5 小时；</li>
+<li>总时长约 9 小时。</li>
+</ul>
+<hr>
+<h2 id="二课程目标">二、课程目标</h2>
+<p>完成课程后，参与者能够：</p>
+<ol>
+<li>认识电阻、LED、按键、电容、电机和电机驱动模块等基本元件；</li>
+<li>理解电压、电流、限流、供电和共地等基本概念；</li>
+<li>理解 GPIO、PWM、串口和传感器的基本作用；</li>
+<li>完成 STM32 程序的编译、下载和基本调试；</li>
+<li>使用 GPIO 控制 LED、读取按键和数字传感器；</li>
+<li>使用 PWM 调节 LED 亮度和电机速度；</li>
+<li>使用串口输出传感器数据和运行状态；</li>
+<li>编写简单的循迹控制程序；</li>
+<li>理解机器人控制中“输入—处理—输出—反馈”的基本流程；</li>
+<li>掌握先测试单个模块、再进行系统集成的基本调试方法。</li>
+</ol>
+<hr>
+<h2 id="三课程最终项目">三、课程最终项目</h2>
+<p>每组完成一辆能够在简单赛道上运行的基础智能小车，至少具备以下功能：</p>
+<ul>
+<li>LED 状态提示；</li>
+<li>按键启动和停止；</li>
+<li>两个直流电机独立控制；</li>
+<li>通过 PWM 调节电机速度；</li>
+<li>红外传感器检测黑线；</li>
+<li>根据传感器信息调整运动方向；</li>
+<li>通过串口输出传感器状态和调试数据。</li>
+</ul>
+<p>课程评价重点不在于单纯比较小车速度，而在于参与者能否：</p>
+<ul>
+<li>说明各硬件模块的作用；</li>
+<li>解释程序与硬件之间的对应关系；</li>
+<li>根据现象定位问题；</li>
+<li>通过调整参数或修改代码改进运行效果。</li>
+</ul>
+<hr>
+<h2 id="四核心知识内容">四、核心知识内容</h2>
+<h3 id="1-基本电子元件">1. 基本电子元件</h3>
+<p>结合项目介绍与实践直接相关的元件：</p>
+<ul>
+<li><strong>电阻</strong>：限流、上拉和下拉；</li>
+<li><strong>LED</strong>：正负极识别，以及为什么需要串联限流电阻；</li>
+<li><strong>按键</strong>：输入信号、上拉/下拉和按键抖动；</li>
+<li><strong>电容</strong>：滤波和储能，理解电机启动对电源稳定性的影响；</li>
+<li><strong>二极管、三极管</strong>：只介绍单向导电和开关作用，帮助理解驱动与保护电路；</li>
+<li><strong>直流电机</strong>：基本特性、供电需求和方向控制；</li>
+<li><strong>电机驱动模块</strong>：为什么 STM32 不能直接驱动电机，以及驱动模块如何提供较大电流。</li>
+</ul>
+<p>电子基础部分不追求复杂的电路计算，重点是让参与者知道元件“是什么、有什么作用、如何连接、接错可能造成什么现象”。</p>
+<h3 id="2-stm32-基础外设">2. STM32 基础外设</h3>
+<ul>
+<li><strong>GPIO</strong>：控制 LED、读取按键和数字传感器；</li>
+<li><strong>定时器与 PWM</strong>：调节 LED 亮度和电机速度；</li>
+<li><strong>串口</strong>：输出传感器数据和运行状态，辅助调试；</li>
+<li><strong>工程开发流程</strong>：创建或打开工程、编译、下载、复位和观察现象。</li>
+</ul>
+<h3 id="3-传感器与控制">3. 传感器与控制</h3>
+<ul>
+<li>红外循迹传感器的基本工作方式；</li>
+<li>数字传感器与模拟传感器的区别；</li>
+<li>传感器安装高度、地面材质和光照对读数的影响；</li>
+<li>根据传感器状态判断小车偏差；</li>
+<li>通过改变左右电机速度实现方向修正；</li>
+<li>误差、反馈和比例控制的直观理解。</li>
+</ul>
+<hr>
+<h2 id="五课时安排">五、课时安排</h2>
+<h2 id="第一次课基本电子元件与-stm32-点灯">第一次课：基本电子元件与 STM32 点灯</h2>
+<h3 id="核心内容">核心内容</h3>
+<ul>
+<li>电压、电流、电阻的直观概念；</li>
+<li>电阻、LED、按键、电容等元件的作用；</li>
+<li>面包板、杜邦线和基本接线方法；</li>
+<li>STM32 开发板与 GPIO 输入输出；</li>
+<li>工程编译、下载和运行的基本流程。</li>
+</ul>
+<h3 id="实践任务">实践任务</h3>
+<ol>
+<li>正确连接 LED 和限流电阻；</li>
+<li>完成 LED 闪烁；</li>
+<li>使用按键控制 LED；</li>
+<li>观察按键抖动，并进行简单处理。</li>
+</ol>
+<h3 id="本次课要建立的认识">本次课要建立的认识</h3>
+<p>STM32 可以读取外部状态，也可以输出控制信号。LED 和按键是理解“输入与输出”的最简单例子。</p>
+<hr>
+<h2 id="第二次课pwm-与电机控制">第二次课：PWM 与电机控制</h2>
+<h3 id="核心内容-1">核心内容</h3>
+<ul>
+<li>定时器和 PWM 的基本概念；</li>
+<li>周期、频率和占空比的直观含义；</li>
+<li>占空比对 LED 亮度和电机速度的影响；</li>
+<li>直流电机和电机驱动模块；</li>
+<li>电源、共地和电机干扰问题。</li>
+</ul>
+<h3 id="实践任务-1">实践任务</h3>
+<ol>
+<li>使用 PWM 改变 LED 亮度；</li>
+<li>控制一个电机正转、反转和停止；</li>
+<li>控制两个电机使小车前进、后退和转向；</li>
+<li>通过按键切换不同速度档位。</li>
+</ol>
+<h3 id="本次课要建立的认识-1">本次课要建立的认识</h3>
+<p>STM32 通常不直接驱动电机，而是输出控制信号，由电机驱动模块提供足够的电流。PWM 是控制执行器的重要方法。</p>
+<hr>
+<h2 id="第三次课传感器与基础循迹">第三次课：传感器与基础循迹</h2>
+<h3 id="核心内容-2">核心内容</h3>
+<ul>
+<li>红外循迹传感器的工作原理；</li>
+<li>数字传感器和模拟传感器的区别；</li>
+<li>GPIO 读取传感器；</li>
+<li>串口输出传感器状态；</li>
+<li>根据传感器状态判断小车偏差和运动方向。</li>
+</ul>
+<h3 id="实践任务-2">实践任务</h3>
+<ol>
+<li>读取左、中、右三个红外传感器；</li>
+<li>通过串口观察传感器数据；</li>
+<li>编写“左偏右转、右偏左转”的控制逻辑；</li>
+<li>让小车在简单直线赛道上完成基础循迹。</li>
+</ol>
+<h3 id="本次课要建立的认识-2">本次课要建立的认识</h3>
+<p>循迹的本质是：</p>
+<blockquote>
+<p>传感器发现偏差，STM32 进行判断，电机改变速度和方向。</p>
+</blockquote>
+<hr>
+<h2 id="第四次课综合调试与项目展示">第四次课：综合调试与项目展示</h2>
+<h3 id="核心内容-3">核心内容</h3>
+<ul>
+<li>小车各模块的整合；</li>
+<li>传感器位置和电机速度校准；</li>
+<li>常见故障排查；</li>
+<li>误差、反馈和比例控制的基本概念；</li>
+<li>如何记录调试过程并表达项目思路。</li>
+</ul>
+<h3 id="实践任务-3">实践任务</h3>
+<ol>
+<li>完成完整循迹；</li>
+<li>调整基础速度和转向修正强度；</li>
+<li>记录至少一次“现象—推测—修改—验证”的调试过程；</li>
+<li>介绍本组小车的硬件结构和程序逻辑。</li>
+</ol>
+<h3 id="本次课要建立的认识-3">本次课要建立的认识</h3>
+<p>机器人项目通常不是一次写对，而是通过观察现象、提出原因、修改参数或代码、再次测试，逐步达到稳定运行。</p>
+<hr>
+<h2 id="六教学设计思路">六、教学设计思路</h2>
+<h3 id="1-先现象后原理">1. 先现象，后原理</h3>
+<p>先让参与者看到 LED 亮度、电机速度和传感器数据的变化，再解释 GPIO、PWM 和传感器的原理，降低抽象概念的理解难度。</p>
+<h3 id="2-先单模块后系统整合">2. 先单模块，后系统整合</h3>
+<p>依次验证 LED、按键、电机和传感器，最后再调试整辆小车。这样可以避免多个问题同时出现，方便初学者定位故障。</p>
+<h3 id="3-基础任务与提高任务分开">3. 基础任务与提高任务分开</h3>
+<p>基础任务保证所有参与者能够完成点灯、电机控制和规则循迹。有经验的同学可以进一步尝试比例控制、避障或蓝牙遥控，但拓展内容不影响基础课程完成。</p>
+<h3 id="4-提供框架保留思考">4. 提供框架，保留思考</h3>
+<p>教师提供工程模板、模块接口、接线图和关键代码框架，让参与者补充传感器判断和电机控制等核心逻辑，降低入门难度，同时避免直接复制最终答案。</p>
+<h3 id="5-设置阶段性检查点">5. 设置阶段性检查点</h3>
+<p>每完成一个模块就进行简单检查：</p>
+<ul>
+<li>LED 是否能正常控制；</li>
+<li>按键状态是否能稳定读取；</li>
+<li>电机是否能够调速和换向；</li>
+<li>串口数据是否合理；</li>
+<li>小车是否能够根据传感器改变方向。</li>
+</ul>
+<hr>
+<h2 id="七软硬件条件">七、软硬件条件</h2>
+<h3 id="1-每组硬件">1. 每组硬件</h3>
+<ul>
+<li>STM32F103 开发板 1 块；</li>
+<li>ST-LINK 或其他下载器 1 个；</li>
+<li>两轮或四轮小车底盘 1 套；</li>
+<li>直流减速电机 2 个；</li>
+<li>电机驱动模块 1 个；</li>
+<li>三路或五路红外循迹模块；</li>
+<li>LED、电阻、按键、电容若干；</li>
+<li>面包板或小型扩展板；</li>
+<li>杜邦线；</li>
+<li>电池盒、电池和 USB 数据线。</li>
+</ul>
+<h3 id="2-软件">2. 软件</h3>
+<ul>
+<li>STM32CubeMX；</li>
+<li>STM32CubeIDE 或 Keil；</li>
+<li>ST-LINK 驱动；</li>
+<li>串口调试工具；</li>
+<li>课程配套工程模板、接线图和实验指导材料。</li>
+</ul>
+<h3 id="3-课前准备">3. 课前准备</h3>
+<p>为节省课堂时间，建议提前完成：</p>
+<ul>
+<li>开发环境安装与测试；</li>
+<li>小车底盘安装；</li>
+<li>示例工程准备；</li>
+<li>演示小车调试；</li>
+<li>备用开发板、驱动模块、电机和电池准备。</li>
+</ul>
+<hr>
+<h2 id="八实施中的问题与解决办法">八、实施中的问题与解决办法</h2>
+<h3 id="1-参与者基础差异较大">1. 参与者基础差异较大</h3>
+<p>采用分组合作和分层任务。基础薄弱的同学完成必做功能，基础较好的同学承担提高任务或协助调试。</p>
+<h3 id="2-电子元件和线路容易接错">2. 电子元件和线路容易接错</h3>
+<p>提供实物照片、清晰接线图和通电前检查表。要求先断电检查，再连接电源。</p>
+<h3 id="3-电机造成开发板重启">3. 电机造成开发板重启</h3>
+<p>规范电机供电，必要时将电机与开发板分开供电，并确保两部分共地。准备备用电池和驱动模块。</p>
+<h3 id="4-传感器数据不稳定">4. 传感器数据不稳定</h3>
+<p>先通过串口观察原始数据，再调整传感器高度、灵敏度和安装位置，同时尽量统一赛道材料和光照条件。</p>
+<h3 id="5-课时内无法完成所有功能">5. 课时内无法完成所有功能</h3>
+<p>提前完成底盘安装和环境配置。基础目标只要求完成规则循迹，比例控制、避障和蓝牙控制作为课后拓展方向。</p>
+<h3 id="6-硬件性能存在差异">6. 硬件性能存在差异</h3>
+<p>评价重点放在功能完成、问题分析和调试过程，不单纯按照小车速度排名。必要时提供统一的基础参数和测试赛道。</p>
+<hr>
+<h2 id="九课程成果与评价">九、课程成果与评价</h2>
+<h3 id="预期成果">预期成果</h3>
+<p>每组完成：</p>
+<ul>
+<li>一辆基础循迹小车；</li>
+<li>一份简单的模块连接图；</li>
+<li>一份可运行的 STM32 工程；</li>
+<li>一张调试记录表；</li>
+<li>一次简短项目展示。</li>
+</ul>
+<h3 id="评价建议">评价建议</h3>
+<table>
+<thead>
+<tr>
+<th>评价内容</th>
+<th style="text-align:right">比例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基本电子元件与接线理解</td>
+<td style="text-align:right">20%</td>
+</tr>
+<tr>
+<td>STM32 基础功能完成</td>
+<td style="text-align:right">25%</td>
+</tr>
+<tr>
+<td>小车循迹功能</td>
+<td style="text-align:right">30%</td>
+</tr>
+<tr>
+<td>调试记录与问题分析</td>
+<td style="text-align:right">15%</td>
+</tr>
+<tr>
+<td>小组展示与协作</td>
+<td style="text-align:right">10%</td>
+</tr>
+</tbody>
+</table>
+<p>评价重点是教学目标是否达成，以及参与者能否解释和改进自己的作品。</p>
+<hr>
+<h2 id="十课程核心价值">十、课程核心价值</h2>
+<p>这门课希望参与者掌握的不是若干个 STM32 函数，而是机器人控制的基本思路：</p>
+<blockquote>
+<p>用传感器获取环境信息，用 STM32 进行处理，再通过电机执行动作，并根据反馈持续修正。</p>
+</blockquote>
+<p>从点灯开始，最后完成智能小车，参与者能够直观理解电子元件、嵌入式程序和机器人运动之间的联系，并为后续学习 STM32、嵌入式系统和机器人控制打下基础。</p>
+
+            
+            
+        </body>
+        </html>
